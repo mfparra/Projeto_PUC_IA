@@ -89,4 +89,16 @@ def retornaPaciente(UUID):
 
                     #print(linha)
 
+def retornaPacienteStage(UUID):
+    with open("Data_TCGA_BRCA/CasosClinicos/clinical.tsv") as tsv:
+        linhasArquivo = csv.reader(tsv, dialect="excel-tab")
+        for i, linha in enumerate(csv.reader(tsv, dialect="excel-tab")):
+            if (i % 2 != 0):
+                if (linha[1]==UUID):
+                    ajccPatStage = linha[26]
+    return(ajccPatStage)
+
+
+
+
                 
