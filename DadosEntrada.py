@@ -6,12 +6,25 @@ import TCGA as tcga
 
 #Verifica se vetores de treino e teste não possuem dados
 #em comum pela intersecção dos vetores
-def verificaInputData(vetTrein, vetTeste):
+def verificaInputData(vetTrein, vetValid, vetTeste):
+    if (len(set(vetTrein).intersection(vetValid)) == 0):
+        return True
+    else:
+        raise Exception ("A intersecção dos vetores de treinamento e validação deve ser 0. "+
+                        "O valor é {}".format(len(set(vetTrein).intersection(vetTeste))))
+
+    if (len(set(vetValid).intersection(vetTeste)) == 0):
+        return True
+    else:
+        raise Exception ("A intersecção dos vetores de validação e teste deve ser 0. "+
+                        "O valor é {}".format(len(set(vetTrein).intersection(vetTeste))))
+
     if (len(set(vetTrein).intersection(vetTeste)) == 0):
         return True
     else:
-        raise Exception ("A intersecção dos vetores de trinamento deve ser 0. "+
+        raise Exception ("A intersecção dos vetores de Treinamento e teste deve ser 0. "+
                         "O valor é {}".format(len(set(vetTrein).intersection(vetTeste))))
+
 
 
 
@@ -20,12 +33,12 @@ def verificaInputData(vetTrein, vetTeste):
 #Altera os rotulos de palavras para numéricos
 #Retorna o vetor de rotulos com o indice dos exames
 #E o vetor de rotulos com o valor do indice referente ao rotulo
-def retornaRotulos(examesRotuloPac, rotulo):
+def retornaRotulosOld(examesRotuloPac, rotulo):
     examesRotulo = []
     if (rotulo == "Stage"):
         #Cria o rotulo do paciente para entrada na rede neural
         for paciente in examesRotuloPac:
-            examesRotulo.append(tcga.retornaPacienteStage(paciente))
+            examesRotulo.append(tcga.retornaPacienteDadoClinico(paciente, "Tratamento"))
 
     #Altera o valor do rótulo de uma String para um valor
     #de acordo com a posição do vetor examesRotulosUsados
@@ -37,6 +50,18 @@ def retornaRotulos(examesRotuloPac, rotulo):
     return (examesRotulo, examesRotulosUsados)
 
 
+def retornaRotulos(examesRotuloPac, dadoClinico, examesRotulosUsados):
+    examesRotulo = []
+    
+    for paciente in examesRotuloPac:
+        examesRotulo.append(tcga.retornaPacienteDadoClinico(paciente, dadoClinico))
+    
+
+    examesRotuloTemp = []
+    for rotulo in examesRotulo:
+        examesRotuloTemp.append(examesRotulosUsados.index(rotulo))
+    examesRotulo = examesRotuloTemp
+    return examesRotulo
 
 #Verifica se vetor de exames tem o mesmo tamanho do 
 #vetor de rótulos
