@@ -39,10 +39,11 @@ def retornaPixelsPaciente(pastaRaiz, vetorPacientes, tamanhoImagem):
         for exame in examePaciente:
             exameTemp = dcmread(exame)
             examePixel = exameTemp.pixel_array
-            
+            examePixel = examePixel.reshape((examePixel.shape[0], examePixel.shape[1], -1))
+
             #Padroniza o tamanho da imagem
             exameRedimen = resize(examePixel,(tamanhoImagem, tamanhoImagem), anti_aliasing=True)
-            
+            #print(exameRedimen.shape)
             #print(exameRedimen)
             exames.append(exameRedimen)
             examesRotuloPaciente.append(paciente)
